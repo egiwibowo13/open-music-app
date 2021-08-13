@@ -1,9 +1,3 @@
-const mapDBToSongsModel = (db) => ({
-  id: db?.id,
-  title: db?.title,
-  performer: db?.performer,
-});
-
 const mapDBToSongModel = (db) => ({
   id: db?.id,
   title: db?.title,
@@ -15,4 +9,4 @@ const mapDBToSongModel = (db) => ({
   updatedAt: db?.updatedAt,
 });
 
-module.exports = { mapDBToSongsModel, mapDBToSongModel };
+module.exports = { mapDBToSongModel };
