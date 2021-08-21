@@ -4,7 +4,7 @@ const InvariantError = require('../../exceptions/InvariantError');
 const { mapDBToSongModel } = require('../../utils');
 const NotFoundError = require('../../exceptions/NotFoundError');
 
-class SonngsService {
+class SongsService {
   constructor() {
     this._pool = new Pool();
   }
@@ -76,4 +76,4 @@ class SonngsService {
   }
 }
 
-module.exports = SonngsService;
+module.exports = SongsService;
