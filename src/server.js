@@ -27,11 +27,17 @@ const playlists = require('./api/playlists');
 const PlaylistsService = require('./services/postgres/PlaylistsService');
 const PlaylistsValidator = require('./validator/playlists');
 
+// playlists
+const playlistsongs = require('./api/playlistsongs');
+const PlaylistSongsService = require('./services/postgres/PlaylistSongsService');
+const PlaylistSongsValidator = require('./validator/playlistsongs');
+
 const init = async () => {
   const songsService = new SongsService();
   const usersService = new UsersService();
   const authenticationsService = new AuthenticationsService();
   const playlistsService = new PlaylistsService();
+  const playlistSongsService = new PlaylistSongsService();
 
   const server = Hapi.server({
     port: process.env.PORT,
@@ -98,6 +104,14 @@ const init = async () => {
         validator: PlaylistsValidator,
       },
     },
+    {
+      plugin: playlistsongs,
+      options: {
+        playlistSongsService,
+        playlistsService,
+        validator: PlaylistSongsValidator,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
@@ -110,6 +124,14 @@ const init = async () => {
         message: response.message,
       });
       newResponse.code(response.statusCode);
+      console.error(response);
+      return newResponse;
+    } if (response?.output?.payload?.statusCode === 401) {
+      const newResponse = h.response({
+        status: 'fail',
+        message: response?.output?.payload?.message,
+      });
+      newResponse.code(response?.output?.payload?.statusCode);
       console.error(response);
       return newResponse;
     } if (response instanceof Error) {

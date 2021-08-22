@@ -30,7 +30,9 @@ class PlaylistsService {
 
   async getPlaylists(owner) {
     const query = {
-      text: 'SELECT id, name, owner AS username FROM playlists WHERE owner = $1',
+      text: `SELECT playlists.id, playlists.name, users.username FROM playlists 
+             INNER JOIN users ON users.id = playlists.owner
+             WHERE owner = $1`,
       values: [owner],
     };
     const result = await this._pool.query(query);
@@ -81,6 +83,21 @@ class PlaylistsService {
       throw new AuthorizationError('Anda tidak berhak mengakses resource ini');
     }
   }
+
+  // async verifyPlaylistAccess(playlistId, userId) {
+  //   try {
+  //     await this.verifyPlaylistOwner(playlistId, userId);
+  //   } catch (error) {
+  //     if (error instanceof NotFoundError) {
+  //       throw error;
+  //     }
+  //     try {
+  //       await this._collaborationService.verifyCollaborator(playlistId, userId);
+  //     } catch {
+  //       throw error;
+  //     }
+  //   }
+  // }
 }
 
 module.exports = PlaylistsService;
