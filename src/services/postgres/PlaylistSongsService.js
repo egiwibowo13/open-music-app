@@ -15,7 +15,7 @@ class PlaylistSongsService {
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new InvariantError('Lagu gagal ditambahkan ke playlist');
     }
     return result.rows[0].id;
@@ -40,7 +40,7 @@ class PlaylistSongsService {
     };
     const result = await this._pool.query(query);
 
-    if (!result.rows.length) {
+    if (!result.rowCount) {
       throw new InvariantError('Playlistsong gagal dihapus');
     }
   }

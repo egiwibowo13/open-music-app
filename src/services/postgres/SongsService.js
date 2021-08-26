@@ -39,8 +39,7 @@ class SongsService {
       values: [id],
     };
     const result = await this._pool.query(query);
-
-    if (!result.rowCount > 0) {
+    if (!result.rowCount) {
       throw new NotFoundError('Lagu tidak ditemukan');
     }
     return result.rows.map(mapDBToSongModel)[0];

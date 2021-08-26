@@ -9,12 +9,12 @@ class PlaylistsHandler {
     this.deletePlaylistByIdHandler = this.deletePlaylistByIdHandler.bind(this);
   }
 
-  async postPlaylistHandler(request, h) {
-    this._validator.validatePlaylistPayload(request.payload);
-    const { id: credentialId } = request.auth.credentials;
+  async postPlaylistHandler({ payload, auth }, h) {
+    this._validator.validatePlaylistPayload(payload);
+    const { id: credentialId } = auth.credentials;
     const {
       name,
-    } = request.payload;
+    } = payload;
     const playlistId = await this._service.addPlaylist({
       name, owner: credentialId,
     });
@@ -29,8 +29,8 @@ class PlaylistsHandler {
     return response;
   }
 
-  async getPlaylistsHandler(request) {
-    const { id: credentialId } = request.auth.credentials;
+  async getPlaylistsHandler({ auth }) {
+    const { id: credentialId } = auth.credentials;
     const playlists = await this._service.getPlaylists(credentialId);
     return {
       status: 'success',
@@ -40,21 +40,21 @@ class PlaylistsHandler {
     };
   }
 
-  async putPlaylistByIdHandler(request) {
-    this._validator.validatePlaylistPayload(request.payload);
-    const { id } = request.params;
-    const { id: credentialId } = request.auth.credentials;
+  async putPlaylistByIdHandler({ payload, params, auth }) {
+    this._validator.validatePlaylistPayload(payload);
+    const { id } = params;
+    const { id: credentialId } = auth.credentials;
     await this._service.verifyPlaylistOwner(id, credentialId);
-    await this._service.editPlaylistById(id, request.payload);
+    await this._service.editPlaylistById(id, payload);
     return {
       status: 'success',
       message: 'playlist berhasil diperbarui',
     };
   }
 
-  async deletePlaylistByIdHandler(request) {
-    const { id } = request.params;
-    const { id: credentialId } = request.auth.credentials;
+  async deletePlaylistByIdHandler({ params, auth }) {
+    const { id } = params;
+    const { id: credentialId } = auth.credentials;
 
     await this._service.verifyPlaylistOwner(id, credentialId);
     await this._service.deletePlaylistById(id);
